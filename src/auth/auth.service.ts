@@ -1,21 +1,21 @@
 import { Injectable , Inject , Res , Request, UseFilters, BadRequestException, UseInterceptors , UsePipes , ValidationPipe } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken'
-import { Response } from 'express';
-import { InjectModel } from '@nestjs/sequelize';
 import { HttpExceptionFilter } from 'src/https/execption.filter';
 import { AdditionalInfoInterceptor } from './additional-info/additional-info.interceptor';
 import { RegisterDto } from 'src/dto/register.dto';
-import { Sequelize } from 'sequelize-typescript';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User} from '../models/user'
 /* import { User } from '../models/user'
 import { Test } from '../models/test' */
 /* const db = require('../models/index') */
-import { SequelizeModule } from '@nestjs/sequelize';
-import { User } from '../models/user'
+
 @Injectable()
 @UseFilters(HttpExceptionFilter)
 @UsePipes(new ValidationPipe())
 
 export class AuthService {
+    constructor(@InjectModel(User.name) private userModel: Model<User>) {}
     /* constructor(
         @InjectModel(User)
         private readonly userModel: typeof User,
@@ -34,7 +34,7 @@ export class AuthService {
         const accessToken = jwt.sign(
             {userId : registerDto.userId}, // ve sau thay = id cua user vua tao
             process.env.ACCESS_TOKEN,
-            {expiresIn : '1h'}
+            {expiresIn : '10h'}
         )
 
         const refreshToken = jwt.sign(
@@ -49,25 +49,20 @@ export class AuthService {
     }
 
     async createUser(data : RegisterDto) {
-        console.log('data',data)
-        await User.create(data)
-        /* await User.update(data, {
-            where : {id : 1}
-        }) */
+        await this.userModel.create(data)
+        
         
     }
 
     async updateUser(data : RegisterDto,userId : string){
-        await User.update(data,{
-            where : { id : userId}
-        })
+        await this.userModel.updateOne({_id : userId} , data)
     }
 
     async getUser(){
-        return await User.findAll({})
+        return await this.userModel.find({})
     }
 
     async deleteUser(userId : string){
-        await User.destroy({where : {id : userId }})
+        
     }
 }

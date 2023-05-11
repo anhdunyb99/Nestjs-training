@@ -1,13 +1,12 @@
-import { Column, Model, Table } from 'sequelize-typescript';
+import { Schema, Prop, SchemaFactory } from '@nestjs/mongoose';
 
-@Table({
-  paranoid: true
-})
-export class User extends Model<User> {
-  @Column
+@Schema()
+export class User {
+  @Prop()
   name: string;
 
-  @Column
+  @Prop()
   age: number;
-
 }
+
+export const UserSchema = SchemaFactory.createForClass(User);
