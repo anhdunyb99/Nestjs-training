@@ -5,10 +5,20 @@ import { UserModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { AuthMiddleware } from './middleware/middleware';
 import { UsersController } from './users/users.controller';
-/* a */
-
+import { SequelizeModule } from '@nestjs/sequelize';
+import { User} from './models/user'
 @Module({
-  imports: [UserModule , AuthModule],
+  imports: [
+      SequelizeModule.forRoot({
+        dialect: 'mysql',
+        host: 'localhost',
+        port: 3306,
+        username: 'root',
+        password: "",
+        database: 'db_nestjs',
+        models: [User],
+      })   
+    ,UserModule , AuthModule],
   controllers: [AppController],
   providers: [AppService],
 })

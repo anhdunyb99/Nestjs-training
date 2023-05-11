@@ -21,4 +21,4 @@ export class AuthMiddleware implements NestMiddleware {
       return res.status(401).json({ message: 'No token provided' });
     }
   }
-}
+} 
