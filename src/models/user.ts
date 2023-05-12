@@ -1,3 +1,4 @@
+import { first } from 'rxjs';
 import { Column, Model, Table } from 'sequelize-typescript';
 
 @Table({
@@ -5,9 +6,26 @@ import { Column, Model, Table } from 'sequelize-typescript';
 })
 export class User extends Model<User> {
   @Column
-  name: string;
+  username : string;
 
   @Column
-  age: number;
+  password : string;
+  
+  @Column
+  email : string
 
+  @Column
+  firstName : string;
+
+  @Column
+  lastName : string;
+
+  @Column
+  roleId : number;
+
+  @Column
+  inviteCode : string
+
+  @Column 
+  isUsed : boolean
 }

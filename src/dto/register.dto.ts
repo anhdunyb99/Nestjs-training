@@ -4,10 +4,31 @@ export class RegisterDto {
     @IsNotEmpty()
     @MinLength(6)
     @MaxLength(20)
-    name : string;
+    username : string;
 
     @IsNotEmpty()
-    age : number;
+    @MinLength(6)
+    @MaxLength(20)
+    password : string;
+
+    @IsNotEmpty()
+    @MinLength(6)
+    @MaxLength(50)
+    email : string
+
+    @IsNotEmpty()
+    firstName : string;
+
+    @IsNotEmpty()
+    lastName : string;
+
+    @IsNotEmpty()
+    roleId : number;
+
+
+    inviteCode : string;
+
+    isUsed : boolean
 
 
 }

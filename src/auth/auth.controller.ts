@@ -5,6 +5,8 @@ import { HttpExceptionFilter } from 'src/https/execption.filter';
 import { PermissionGuard } from './guard/guard';
 import { AdditionalInfoInterceptor } from './additional-info/additional-info.interceptor';
 import { RegisterDto } from 'src/dto/register.dto';
+import { CustomDecorator } from 'src/custom-decorator/custom.decorator';
+import { request } from 'http';
 
 
 @Controller('auth')
@@ -40,7 +42,12 @@ export class AuthController {
     }
 
     @Get('/')
-    async GetUser(){
+    async GetUser(@CustomDecorator('userId') userId : string , @CustomDecorator() request : Request){
+        // Sử dụng giá trị từ decorator
+    /* console.log('User ID:', userId); */
+
+    // Hoặc sử dụng toàn bộ request
+    /* console.log('Request:', request); */
         const data = await this.authService.getUser()
         return data
     }

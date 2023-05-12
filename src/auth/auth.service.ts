@@ -57,8 +57,8 @@ export class AuthService {
         
     }
 
-    async updateUser(data : RegisterDto,userId : string){
-        await User.update(data,{
+    async updateUser(data : any ,userId : string){
+        await User.update(data , {
             where : { id : userId}
         })
     }
