@@ -1,25 +1,23 @@
-import { Controller, Post, Get , Response, Body, UseGuards, UseFilters, UseInterceptors , UsePipes , ValidationPipe  , HttpCode, Put, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Get, Inject, Body, UseGuards, UseFilters, UseInterceptors, UsePipes, ValidationPipe, HttpCode, Put, Param, Delete } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { AuthMiddleware } from 'src/middleware/middleware';
-import { HttpExceptionFilter } from 'src/https/execption.filter';
 import { PermissionGuard } from './guard/guard';
-import { AdditionalInfoInterceptor } from './additional-info/additional-info.interceptor';
 import { RegisterDto } from 'src/dto/register.dto';
 import { CustomDecorator } from 'src/custom-decorator/custom.decorator';
-import { request } from 'http';
-
+import { SmsService } from './twilio.service';
 
 @Controller('auth')
 @UsePipes(new ValidationPipe())
 /* @UseInterceptors(AdditionalInfoInterceptor) */
 
 export class AuthController {
-    constructor(private readonly authService: AuthService) { }
+    constructor(private readonly authService: AuthService,
+        @Inject(SmsService) private smsService: SmsService
+    ) { }
     @Post('register')
-    /* @HttpCode(20) */
+    /* @HttpCode(200) */
     @UseGuards(PermissionGuard)
     async Register(@Body() body: RegisterDto) {
-        const data = await this.authService.Register(body)    
+        const data = await this.authService.Register(body)
         /* res.json({
             success: true,
             message: 'Create user successfully',
@@ -29,31 +27,36 @@ export class AuthController {
     }
 
 
-    @Post('/')
-    async CreateUser(@Body() body : RegisterDto){
+    @Post('/admin')
+    async CreateUser(@Body() body: RegisterDto) {
         const data = await this.authService.createUser(body)
         return body
     }
 
-    @Put('/:id')
-    async UpdateUser(@Body() body : RegisterDto, @Param() params : any){
-        const data = await this.authService.updateUser(body,params.id)
-        return body
-    }
-
-    @Get('/')
-    async GetUser(@CustomDecorator('userId') userId : string , @CustomDecorator() request : Request){
-        // Sử dụng giá trị từ decorator
-    /* console.log('User ID:', userId); */
-
-    // Hoặc sử dụng toàn bộ request
-    /* console.log('Request:', request); */
+    @Get('/admin')
+    async GetUser(){
         const data = await this.authService.getUser()
         return data
     }
 
-    @Delete('/:id')
-    async DeleteUser(@Param() params : any){
+    @Put('/admin/:id')
+    async UpdateUser(@Body() body: RegisterDto, @Param() params: any) {
+        const data = await this.authService.updateUser(body, params.id)
+        return body
+    }
+
+    @Post('send-otp/:id')
+    async sendOtp(@Body() body: any, @Param() param : any) {
+        await this.smsService.sendOtp(body.phoneNumber,param.id)
+    }
+    @Get('verify-otp/:id')
+    async verifyOtp(@Body() body : any,@Param() param : any){
+        console.log(body,param);
+        
+        await this.smsService.verifyOtp(body.otp,param.id)
+    }
+    @Delete('/admin/:id')
+    async DeleteUser(@Param() params: any) {
         await this.authService.deleteUser(params.id)
     }
 }

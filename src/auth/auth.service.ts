@@ -1,4 +1,4 @@
-import { Injectable , Inject , Res , Request, UseFilters, BadRequestException, UseInterceptors , UsePipes , ValidationPipe } from '@nestjs/common';
+import { Injectable, Inject, Res, Request, UseFilters, BadRequestException, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken'
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/sequelize';
@@ -16,58 +16,72 @@ import { User } from '../models/user'
 @UsePipes(new ValidationPipe())
 
 export class AuthService {
-    /* constructor(
+    constructor(
         @InjectModel(User)
         private readonly userModel: typeof User,
-      ) {} */
-    Register(registerDto : any):any {
-        /* if(!registerDto.username || !registerDto.password){
+    ) { }
+    async Register(registerDto: any) {
+        if (!registerDto.username || !registerDto.password) {
             throw new BadRequestException(`Invalid username or password`)
-        } */
+        }
         /* asd */
         // check trung ten
+        const condition = await this.userModel.findOne({
+            where: {
+                username: registerDto.username
+            }
+        })
 
+        if (condition) {
+            throw new BadRequestException(`Username exist`)
+        }
+        // check 
         //all good 
         // hash password
 
         // return access token and refresh token
         const accessToken = jwt.sign(
-            {userId : registerDto.userId}, // ve sau thay = id cua user vua tao
+            { userId: registerDto.userId }, // ve sau thay = id cua user vua tao
             process.env.ACCESS_TOKEN,
-            {expiresIn : '1h'}
+            { expiresIn: '10h' }
         )
 
         const refreshToken = jwt.sign(
             { userId: registerDto.userId },
             process.env.REFRESH_TOKEN, { expiresIn: '7d' }
         );
-        const token = {
-            accessToken : accessToken,
-            refreshToken : refreshToken
+        const data = {
+            accessToken: accessToken,
+            refreshToken: refreshToken,
+            data: registerDto
         }
-        return token 
+
+        await this.userModel.create(registerDto)
+        return data
     }
 
-    async createUser(data : RegisterDto) {
-        console.log('data',data)
-        await User.create(data)
+
+
+    async createUser(data: RegisterDto) {
+        console.log('data', data)
+        await this.userModel.create(data)
         /* await User.update(data, {
             where : {id : 1}
         }) */
-        
+
     }
 
-    async updateUser(data : any ,userId : string){
-        await User.update(data , {
-            where : { id : userId}
+    async updateUser(data: any, userId: string) {
+        await this.userModel.update(data, {
+            where: { id: userId }
         })
     }
 
-    async getUser(){
-        return await User.findAll({})
+    async getUser() {
+        return await this.userModel.findAll({})
     }
 
-    async deleteUser(userId : string){
-        await User.destroy({where : {id : userId }})
+    async deleteUser(userId: string) {
+        await this.userModel.destroy({ where: { id: userId } })
     }
 }

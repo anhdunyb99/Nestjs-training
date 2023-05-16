@@ -1,6 +1,6 @@
-import { first } from 'rxjs';
-import { Column, Model, Table } from 'sequelize-typescript';
 
+import { Column, DataType, Model, Table , HasMany } from 'sequelize-typescript';
+import { Order } from './order';
 @Table({
   paranoid: true
 })
@@ -21,11 +21,24 @@ export class User extends Model<User> {
   lastName : string;
 
   @Column
-  roleId : number;
-
-  @Column
-  inviteCode : string
+  phoneNumber : string
 
   @Column 
-  isUsed : boolean
+  point : number
+
+  @Column 
+  isActive : boolean
+
+  @Column({
+    type : DataType.ENUM('Gold', 'Silver', 'Bronze')
+  })
+  loyal_type: string;
+  @Column 
+  otp : string
+
+  @Column 
+  exprise_date : Date
+
+  @HasMany(() => Order)
+  orders: Order[];
 }

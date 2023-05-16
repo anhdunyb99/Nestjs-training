@@ -4,19 +4,17 @@
 module.exports = {
   up(queryInterface, Sequelize) {
     return Promise.all([
-      
       queryInterface.addColumn(
         'Users',
-        'email',
+        'point',
         {
-          type: Sequelize.STRING,
-          allowNull: false,
+          type: Sequelize.DOUBLE,
+          allowNull: true,
+          defaultValue: null,
         },
       ),
-      
     ]);
   },
-
   async down (queryInterface, Sequelize) {
     /**
      * Add reverting commands here.

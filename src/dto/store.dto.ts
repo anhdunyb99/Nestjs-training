@@ -1,6 +1,11 @@
 import { IsNotEmpty , MinLength , MaxLength } from "class-validator";
 
-export class RegisterDto {
+export class StoreDto {
+    @IsNotEmpty()
+    @MinLength(6)
+    @MaxLength(20)
+    name : string;
+
     @IsNotEmpty()
     @MinLength(6)
     @MaxLength(20)
@@ -16,18 +21,6 @@ export class RegisterDto {
     @MaxLength(50)
     email : string
 
-    @IsNotEmpty()
-    firstName : string;
 
-    @IsNotEmpty()
-    lastName : string;
-
-    @IsNotEmpty()
-    phoneNumber : string;
-
-    @IsNotEmpty()
-    point : number
-
-    loyal_type : string
 
 }
