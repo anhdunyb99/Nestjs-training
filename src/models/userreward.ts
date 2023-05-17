@@ -1,21 +1,21 @@
 
 import { Column, DataType, Model, Table , HasMany , ForeignKey , BelongsTo } from 'sequelize-typescript';
-import { Store } from './store';
+import { Reward } from './reward';
 import { User } from './user';
 @Table({
 })
-export class Order extends Model<Order> {
+export class UserReward extends Model<UserReward> {
 
   @ForeignKey(() => User)  
   @Column
   userId : string;
 
-  @ForeignKey(() => Store)
+  @ForeignKey(() => Reward)
   @Column   
-  storeId : string;
+  rewardId : string;
 
   @Column
-  total_money : number;
+  quantity : number;
 
   @Column
   total_point : number;
@@ -23,7 +23,7 @@ export class Order extends Model<Order> {
   @BelongsTo(() => User)
   user: User;
 
-  @BelongsTo(() => Store)
-  store: Store;
+  @BelongsTo(() => Reward)
+  reward: Reward;
 
 }

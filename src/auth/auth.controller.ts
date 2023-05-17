@@ -5,6 +5,7 @@ import { RegisterDto } from 'src/dto/register.dto';
 import { CustomDecorator } from 'src/custom-decorator/custom.decorator';
 import { SmsService } from './twilio.service';
 import { StoreDto } from 'src/dto/store.dto';
+import { AdminDto } from 'src/dto/admin.dto';
 
 @Controller('admin')
 @UsePipes(new ValidationPipe())
@@ -64,6 +65,7 @@ export class AuthController {
     @Put('/verify-store/:id')
     async VerifyStore(@Param() param : any){
         await this.authService.verifyStore(param.id)
+        return 'Đã phê duyệt cửa hàng'
     }
 
     @Get('/list-store')
@@ -74,5 +76,10 @@ export class AuthController {
     @Put('/store')
     async updateStore(@Body() body : StoreDto,@Param() param : any){
         await this.authService.updateStore(body,param.id)
+    }
+
+    @Post('/register-admin')
+    async RegisterAdmin(@Body() body : AdminDto){
+        await this.authService.registerAdmin(body)
     }
 }

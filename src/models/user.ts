@@ -1,6 +1,9 @@
 
-import { Column, DataType, Model, Table , HasMany } from 'sequelize-typescript';
+import { Column, DataType, Model, Table , HasMany , BelongsToMany } from 'sequelize-typescript';
 import { Order } from './order';
+import { Reward } from './reward';
+import { UserReward } from './userreward';
+import { Store } from './store';
 @Table({
   paranoid: true
 })
@@ -27,6 +30,9 @@ export class User extends Model<User> {
   point : number
 
   @Column 
+  point_used : number
+
+  @Column 
   isActive : boolean
 
   @Column({
@@ -39,6 +45,10 @@ export class User extends Model<User> {
   @Column 
   exprise_date : Date
 
-  @HasMany(() => Order)
-  orders: Order[];
+
+  @BelongsToMany(() => Reward, () => UserReward)
+  rewards: Reward[];
+
+  @BelongsToMany(() => Store, () => Order)
+  stores: Store[];
 }

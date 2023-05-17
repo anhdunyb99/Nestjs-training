@@ -12,6 +12,8 @@ import { Test } from '../models/test' */
 import { Store } from 'src/models/store';
 import { User } from '../models/user'
 import { StoreDto } from 'src/dto/store.dto';
+import { AdminDto } from 'src/dto/admin.dto';
+import { Admin } from 'src/models/admin';
 @Injectable()
 @UseFilters(HttpExceptionFilter)
 @UsePipes(new ValidationPipe())
@@ -22,6 +24,8 @@ export class AuthService {
         private readonly userModel: typeof User,
         @InjectModel(Store)
         private readonly storeModel: typeof Store,
+        @InjectModel(Admin)
+        private readonly adminModel: typeof Admin,
     ) { }
     async Register(registerDto: any) {
         if (!registerDto.username || !registerDto.password) {
@@ -110,5 +114,9 @@ export class AuthService {
         await this.storeModel.update(updateStore,{where : {
             id : storeId
         }})
+    }
+
+    async registerAdmin(registerDto : AdminDto){
+        await this.adminModel.create(registerDto)
     }
 }

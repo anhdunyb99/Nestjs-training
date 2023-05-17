@@ -1,5 +1,6 @@
-import { Column, Model, Table, ForeignKey, BelongsTo , DataType, HasMany } from 'sequelize-typescript';
+import { Column, Model, Table, ForeignKey, BelongsTo , DataType, HasMany, BelongsToMany } from 'sequelize-typescript';
 import { Order } from './order';
+import { User } from './user';
 
 @Table
 export class Store extends Model<Store> {
@@ -32,6 +33,37 @@ export class Store extends Model<Store> {
   @Column
   otp_exprise : Date;
 
-  @HasMany(() => Order)
-  orders: Order[];
+  @Column
+  brozne_discount : number;
+
+  @Column
+  silver_discount : number;
+
+  @Column
+  gold_discount : number;
+
+  @Column
+  minium_money : number;
+
+  @Column
+  bronze_default_point : number;
+
+  @Column
+  silver_default_point : number;
+
+  @Column
+  gold_default_point : number;
+
+  @Column
+  bronze_max_point : number;
+
+  @Column
+  silver_max_point : number;
+
+  @Column
+  gold_max_point : number;
+
+
+  @BelongsToMany(() => User, () => Order)
+  users: User[];
 }
