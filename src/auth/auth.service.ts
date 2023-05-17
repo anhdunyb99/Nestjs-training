@@ -9,8 +9,9 @@ import { Sequelize } from 'sequelize-typescript';
 /* import { User } from '../models/user'
 import { Test } from '../models/test' */
 /* const db = require('../models/index') */
-import { SequelizeModule } from '@nestjs/sequelize';
+import { Store } from 'src/models/store';
 import { User } from '../models/user'
+import { StoreDto } from 'src/dto/store.dto';
 @Injectable()
 @UseFilters(HttpExceptionFilter)
 @UsePipes(new ValidationPipe())
@@ -19,6 +20,8 @@ export class AuthService {
     constructor(
         @InjectModel(User)
         private readonly userModel: typeof User,
+        @InjectModel(Store)
+        private readonly storeModel: typeof Store,
     ) { }
     async Register(registerDto: any) {
         if (!registerDto.username || !registerDto.password) {
@@ -83,5 +86,29 @@ export class AuthService {
 
     async deleteUser(userId: string) {
         await this.userModel.destroy({ where: { id: userId } })
+    }
+
+    async verifyStore(storeId : string){
+        const condition = await this.storeModel.findOne({where : {
+            id : storeId,
+            isVerify : true
+        }})
+
+        if(condition){
+            await this.storeModel.update({ isActive : true},{where : {id : storeId}})
+        } else {
+            throw new BadRequestException(`Store not exist or didnt verify yet`)
+        }
+    }
+
+    async getListStore(){
+        const list = await this.storeModel.findAll({})
+        return list
+    }
+
+    async updateStore(updateStore : StoreDto,storeId : string){
+        await this.storeModel.update(updateStore,{where : {
+            id : storeId
+        }})
     }
 }

@@ -4,8 +4,9 @@ import { PermissionGuard } from './guard/guard';
 import { RegisterDto } from 'src/dto/register.dto';
 import { CustomDecorator } from 'src/custom-decorator/custom.decorator';
 import { SmsService } from './twilio.service';
+import { StoreDto } from 'src/dto/store.dto';
 
-@Controller('auth')
+@Controller('admin')
 @UsePipes(new ValidationPipe())
 /* @UseInterceptors(AdditionalInfoInterceptor) */
 
@@ -27,19 +28,19 @@ export class AuthController {
     }
 
 
-    @Post('/admin')
+    @Post('/')
     async CreateUser(@Body() body: RegisterDto) {
         const data = await this.authService.createUser(body)
         return body
     }
 
-    @Get('/admin')
+    @Get('/')
     async GetUser(){
         const data = await this.authService.getUser()
         return data
     }
 
-    @Put('/admin/:id')
+    @Put('/:id')
     async UpdateUser(@Body() body: RegisterDto, @Param() params: any) {
         const data = await this.authService.updateUser(body, params.id)
         return body
@@ -55,8 +56,23 @@ export class AuthController {
         
         await this.smsService.verifyOtp(body.otp,param.id)
     }
-    @Delete('/admin/:id')
+    @Delete('/:id')
     async DeleteUser(@Param() params: any) {
         await this.authService.deleteUser(params.id)
+    }
+
+    @Put('/verify-store/:id')
+    async VerifyStore(@Param() param : any){
+        await this.authService.verifyStore(param.id)
+    }
+
+    @Get('/list-store')
+    async GetListStore(){
+        return await this.authService.getListStore()
+    }
+
+    @Put('/store')
+    async updateStore(@Body() body : StoreDto,@Param() param : any){
+        await this.authService.updateStore(body,param.id)
     }
 }

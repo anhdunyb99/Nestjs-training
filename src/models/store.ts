@@ -23,6 +23,15 @@ export class Store extends Model<Store> {
   })
   caculate_point_type : string;
 
+  @Column
+  otp : string;
+
+  @Column
+  isVerify : boolean;
+
+  @Column
+  otp_exprise : Date;
+
   @HasMany(() => Order)
   orders: Order[];
 }
