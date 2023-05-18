@@ -80,3 +80,15 @@ export class DefaultDto {
     @Min(0)
     minium_money: number;
 }
+
+export class StoreLoginDto {
+    @IsNotEmpty()
+    @MinLength(6)
+    @MaxLength(20)
+    username : string
+
+    @IsNotEmpty()
+    @MinLength(6)
+    @MaxLength(20)
+    password : string
+}

@@ -1,4 +1,4 @@
-import { Injectable, Inject, Res, Request, UseFilters, BadRequestException, UseInterceptors, UsePipes, ValidationPipe } from '@nestjs/common';
+import { Injectable, Inject, Res, Request, UseFilters, BadRequestException, UseInterceptors, UsePipes, ValidationPipe , NotFoundException } from '@nestjs/common';
 import * as jwt from 'jsonwebtoken'
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/sequelize';
@@ -27,44 +27,27 @@ export class AuthService {
         @InjectModel(Admin)
         private readonly adminModel: typeof Admin,
     ) { }
-    async Register(registerDto: any) {
-        if (!registerDto.username || !registerDto.password) {
+    async loginAdmin (login : AdminDto) {
+        if(!login.username || !login.password){
             throw new BadRequestException(`Invalid username or password`)
         }
-        /* asd */
-        // check trung ten
-        const condition = await this.userModel.findOne({
-            where: {
-                username: registerDto.username
-            }
-        })
+        const condition = await this.adminModel.findOne({where : {username : login.username,password : login.password}})
 
-        if (condition) {
-            throw new BadRequestException(`Username exist`)
+        if(condition){
+            const accessToken = jwt.sign(
+                { adminId: condition.id }, // ve sau thay = id cua user vua tao
+                process.env.ACCESS_TOKEN,
+                { expiresIn: '10h' }
+            )
+    
+            const refreshToken = jwt.sign(
+                { adminId: condition.id },
+                process.env.REFRESH_TOKEN, { expiresIn: '7d' }
+            );
+
+            await this.adminModel.update({refresh_token : refreshToken},{where : {id : condition.id}})
+            return accessToken
         }
-        // check 
-        //all good 
-        // hash password
-
-        // return access token and refresh token
-        const accessToken = jwt.sign(
-            { userId: registerDto.userId }, // ve sau thay = id cua user vua tao
-            process.env.ACCESS_TOKEN,
-            { expiresIn: '10h' }
-        )
-
-        const refreshToken = jwt.sign(
-            { userId: registerDto.userId },
-            process.env.REFRESH_TOKEN, { expiresIn: '7d' }
-        );
-        const data = {
-            accessToken: accessToken,
-            refreshToken: refreshToken,
-            data: registerDto
-        }
-
-        await this.userModel.create(registerDto)
-        return data
     }
 
 
@@ -101,7 +84,7 @@ export class AuthService {
         if(condition){
             await this.storeModel.update({ isActive : true},{where : {id : storeId}})
         } else {
-            throw new BadRequestException(`Store not exist or didnt verify yet`)
+            throw new NotFoundException(`Store not exist or didnt verify yet`)
         }
     }
 

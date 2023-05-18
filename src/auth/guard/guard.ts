@@ -1,19 +1,89 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Observable } from 'rxjs';
+import * as jwt from 'jsonwebtoken';
+import * as dotenv from 'dotenv'
+import { InjectModel } from '@nestjs/sequelize';
+import { User } from 'src/models/user';
+import { Store } from 'src/models/store';
+import { Admin } from 'src/models/admin';
+dotenv.config()
 
 @Injectable()
-export class PermissionGuard implements CanActivate {
-  canActivate(
+export class UserPermissionGuard implements CanActivate {
+  constructor(
+    @InjectModel(User)
+    private readonly userModel: typeof User,
+  ) { }
+  async canActivate(
     context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  ): Promise<boolean> {
     // Lấy thông tin về request
     const request = context.switchToHttp().getRequest();
-    /* console.log('request',request); */
-    
-    // Kiểm tra quyền của người dùng
+    const token = request.headers.authorization?.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN)
 
-    // neu hop le thi return true
+    // check user co ton tai khong
+    const condition = await this.userModel.findByPk(decoded.userId)
 
-    return true
+    if(condition){
+      return true
+    } else {
+      return false
+    }
+
   }
 }
+
+export class StorePermissionGuard implements CanActivate {
+  constructor(
+    @InjectModel(Store)
+    private readonly storeModel: typeof Store,
+  ) { }
+  async canActivate(
+    context: ExecutionContext,
+  ): Promise<boolean> {
+    // Lấy thông tin về request
+    const request = context.switchToHttp().getRequest();
+    const token = request.headers.authorization?.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN)
+    console.log(decoded);
+    
+    // check user co ton tai khong
+    const condition = await this.storeModel.findByPk(decoded.storeId)
+
+    if(condition){
+      return true
+    } else {
+      return false
+    }
+    
+  }
+}
+
+export class AdminPermissionGuard implements CanActivate {
+  constructor(
+    @InjectModel(Admin)
+    private readonly adminModel: typeof Admin,
+  ) { }
+  async canActivate(
+    context: ExecutionContext,
+  ): Promise<boolean> {
+    // Lấy thông tin về request
+    const request = context.switchToHttp().getRequest();
+    const token = request.headers.authorization?.split(' ')[1]
+    const decoded = jwt.verify(token, process.env.ACCESS_TOKEN)
+    console.log(decoded);
+    
+    // check user co ton tai khong
+    const condition = await this.adminModel.findByPk(decoded.adminId)
+
+    if(condition){
+      return true
+    } else {
+      return false
+    }
+    
+  }
+}
+
+

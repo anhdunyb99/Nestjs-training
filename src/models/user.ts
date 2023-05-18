@@ -46,6 +46,9 @@ export class User extends Model<User> {
   @Column
   point_used1 : number
 
+  @Column
+  refresh_token : string
+
 
   @BelongsToMany(() => Reward, () => UserReward)
   rewards: Reward[];

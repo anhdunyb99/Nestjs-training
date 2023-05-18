@@ -5,10 +5,11 @@ import { SequelizeModule } from "@nestjs/sequelize";
 import { Reward } from "src/models/reward";
 import { User } from "src/models/user";
 import { UserReward } from "src/models/userreward";
+import { Store } from "src/models/store";
 
 
 @Module({
-    imports : [SequelizeModule.forFeature([Reward,User,UserReward])],
+    imports : [SequelizeModule.forFeature([Reward,User,UserReward,Store])],
     controllers : [RewardController],
     providers : [RewardService]
 })

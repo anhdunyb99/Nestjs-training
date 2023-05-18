@@ -1,4 +1,4 @@
-import { Injectable , UseFilters , BadRequestException} from '@nestjs/common';
+import { Injectable , UseFilters , BadRequestException , ForbiddenException} from '@nestjs/common';
 import { InjectModel  } from '@nestjs/sequelize';
 import { Op } from 'sequelize';
 import { User } from 'src/models/user';
@@ -32,7 +32,7 @@ export class SmsService {
       }
     }})
     if(condition){
-      throw new BadRequestException(`Sau ${(Math.floor(condition.exprise_date.getTime() / 1000))-(Math.floor(now.getTime() / 1000))} giây có thể gửi lại OTP`)
+      throw new ForbiddenException(`Sau ${(Math.floor(condition.exprise_date.getTime() / 1000))-(Math.floor(now.getTime() / 1000))} giây có thể gửi lại OTP`)
     }
 
     const otp = generateOtp(); // Your OTP generation logic

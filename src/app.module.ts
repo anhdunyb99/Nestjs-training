@@ -29,17 +29,8 @@ import { OrderModule } from './order/order.module';
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements NestModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer.apply(AuthMiddleware) // neu muon them middleware thi bo sung vao day
-    .exclude('/admin/register','/auth/login','/auth/send-otp/:id','/auth/verify-otp/:id','/admin')
-    .forRoutes('*');
-
-
-    /* consumer.apply(AuthMiddleware) // neu muon them middleware thi bo sung vao day
-    .exclude('/auth/register','/auth/login')
-    .forRoutes('*'); */
-  }
-
+export class AppModule  {
   
 }
+
+

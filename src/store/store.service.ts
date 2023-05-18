@@ -1,11 +1,14 @@
-import { Injectable, BadRequestException, UseFilters } from "@nestjs/common";
+import { Injectable, BadRequestException, UseFilters , UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from '@nestjs/sequelize';
-import { DefaultDto, DiscountDto, StoreDto } from "src/dto/store.dto";
+import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto } from "src/dto/store.dto";
 import { HttpExceptionFilter } from "src/https/execption.filter";
 import { Store } from "src/models/store";
 import { Op } from "sequelize";
 import { User } from "src/models/user";
 import { Reward } from "src/models/reward";
+import * as jwt from 'jsonwebtoken'
+import * as dotenv from 'dotenv'
+dotenv.config()
 @Injectable()
 @UseFilters(HttpExceptionFilter)
 export class StoreService {
@@ -24,6 +27,30 @@ export class StoreService {
             attributes: ['firstName','lastName','email','phoneNumber','loyal_type'],
           }]})
         return result
+    }
+
+    async Login(loginDto : StoreLoginDto){
+        if (!loginDto.username || !loginDto.password) {
+            throw new BadRequestException(`Invalid username or password`)
+        }
+
+        const condition = await this.storeModel.findOne({where :{username:loginDto.username,password:loginDto.password}})
+        if(condition.isActive == true && condition.isVerify == true){
+            const accessToken = jwt.sign(
+                { storeId: condition.id }, // ve sau thay = id cua user vua tao
+                process.env.ACCESS_TOKEN,
+                { expiresIn: '10h' }
+            )
+    
+            const refreshToken = jwt.sign(
+                { storeId: condition.id },
+                process.env.REFRESH_TOKEN, { expiresIn: '7d' }
+            );
+            await this.storeModel.update({refresh_token : refreshToken},{where : {id : condition.id}})
+            return accessToken
+        } else {
+            throw new UnauthorizedException(`Your account is not active yet`)
+        }
     }
 
     async registerStore(storeRegisterDto: StoreDto) {

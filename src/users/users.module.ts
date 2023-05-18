@@ -1,11 +1,14 @@
 import { Module } from "@nestjs/common";
 import { UsersController } from "./users.controller";
-import { UserServie } from "./users.service";
+import { UserService } from "./users.service";
+import { SequelizeModule } from "@nestjs/sequelize";
+import { User } from "src/models/user";
+import { SmsService } from "src/auth/twilio.service";
 
 @Module({
-    imports : [],
+    imports : [SequelizeModule.forFeature([User])],
     controllers : [UsersController],
-    providers : [UserServie]
+    providers : [UserService,SmsService]
 })
 
 export class UserModule {}

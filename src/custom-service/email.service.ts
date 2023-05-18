@@ -1,4 +1,4 @@
-import { Injectable , UseFilters , BadRequestException } from '@nestjs/common';
+import { Injectable , UseFilters , BadRequestException, ForbiddenException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
 import { createTransport } from 'nodemailer';
 import { google } from 'googleapis';
@@ -57,7 +57,7 @@ export class EmailService {
                 }
             }})
             if(condition){
-                throw new BadRequestException(`Sau ${(Math.floor(condition.otp_exprise.getTime() / 1000))-(Math.floor(now.getTime() / 1000))} giây có thể gửi lại OTP`)
+                throw new ForbiddenException(`Sau ${(Math.floor(condition.otp_exprise.getTime() / 1000))-(Math.floor(now.getTime() / 1000))} giây có thể gửi lại OTP`)
             }
             // good 
             //generate new otp
