@@ -29,9 +29,7 @@ export class User extends Model<User> {
   @Column 
   point : number
 
-  @Column 
-  point_used : number
-
+  
   @Column 
   isActive : boolean
 
@@ -44,6 +42,9 @@ export class User extends Model<User> {
 
   @Column 
   exprise_date : Date
+
+  @Column
+  point_used1 : number
 
 
   @BelongsToMany(() => Reward, () => UserReward)

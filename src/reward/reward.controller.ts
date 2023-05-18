@@ -1,6 +1,7 @@
 import { Injectable , Controller , Get , Param , Body , Response , Post, Put , Delete , UsePipes, ValidationPipe} from "@nestjs/common";
 import { RewardService } from "./reward.service";
-import { RewardDto } from "src/dto/reward.dto";
+import { ExchangeDto, RewardDto } from "src/dto/reward.dto";
+
 
 
 @Controller('reward')
@@ -36,6 +37,19 @@ export class RewardController {
     async DeleteReward(@Param() param : any){
         await this.rewardService.deleteReward(param.rewardId,param.storeId)
         return 'Delete successfully'
+    }
+
+    @Post('/exchange/:rewardId/:userId')
+    async ExchangeReward(@Body() body : ExchangeDto, @Param() param : any){
+        console.log(body);
+        
+        await this.rewardService.exchangeReward(body.quantity,param.userId,param.rewardId)
+    }
+
+    @Get('/exchange/:userId')
+    async GetRewardByUserId(@Param() param : any){
+        const data = await this.rewardService.getRewardExchangeByUserId(param.userId)
+        return data
     }
 }
 

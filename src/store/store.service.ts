@@ -4,6 +4,8 @@ import { DefaultDto, DiscountDto, StoreDto } from "src/dto/store.dto";
 import { HttpExceptionFilter } from "src/https/execption.filter";
 import { Store } from "src/models/store";
 import { Op } from "sequelize";
+import { User } from "src/models/user";
+import { Reward } from "src/models/reward";
 @Injectable()
 @UseFilters(HttpExceptionFilter)
 export class StoreService {
@@ -12,8 +14,16 @@ export class StoreService {
         private readonly storeModel: typeof Store,
     ) { }
 
-    async getStore() {
-        return '123'
+    async getStoreById(storeId : string) {
+        return await this.storeModel.findByPk(storeId)
+    }
+
+    async getListCustomer(storeId : string){
+        const result = await this.storeModel.findByPk(storeId,{include: [{
+            model: User,
+            attributes: ['firstName','lastName','email','phoneNumber','loyal_type'],
+          }]})
+        return result
     }
 
     async registerStore(storeRegisterDto: StoreDto) {

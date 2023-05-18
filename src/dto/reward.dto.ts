@@ -1,4 +1,4 @@
-import { IsNotEmpty , MinLength , MaxLength, IsInt } from "class-validator";
+import { IsNotEmpty , MinLength , MaxLength, IsInt, IsNumber, Max, Min } from "class-validator";
 
 export class RewardDto {
     @IsNotEmpty()
@@ -27,4 +27,11 @@ export class RewardDto {
     url : string
 
     storeId : string
+}
+
+export class ExchangeDto {
+    @IsNumber()
+    @Min(0)
+    @Max(100)
+    quantity: number
 }

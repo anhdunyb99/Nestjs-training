@@ -7,9 +7,15 @@ import { EmailService } from "src/custom-service/email.service";
 export class StoreController {
     constructor(private readonly storeService: StoreService, private readonly mailService: EmailService) { }
 
-    @Get()
-    async GetStore() {
-        const data = this.storeService.getStore()
+    @Get('/:id')
+    async GetStore(@Param() param : any) {
+        const data = this.storeService.getStoreById(param.id)
+        return data
+    }
+
+    @Get('/list-customer/:id')
+    async getListCustomer(@Param() param : any){
+        const data = this.storeService.getListCustomer(param.id)
         return data
     }
 

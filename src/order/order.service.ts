@@ -24,7 +24,7 @@ export class OrderService {
     async createOrder(userId: string, storeId: string, totalMoney: number) {
         //check rank va update rank user
         const user = await this.userModel.findOne({ where: { id: userId } })
-        const user_total_point = user.point_used + user.point
+        const user_total_point = user.point_used1 + user.point
         console.log('user_total_point',user_total_point);
         
         if(user_total_point < 2000){
