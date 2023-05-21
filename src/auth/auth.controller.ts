@@ -17,7 +17,7 @@ export class AuthController {
     ) { }
     
     
-    @Post('/')
+    @Post('/users')
     @UseGuards(AdminPermissionGuard)
     async CreateUser(@Body() body: RegisterDto) {
         const data = await this.authService.createUser(body)
@@ -25,7 +25,7 @@ export class AuthController {
     }
 
     
-    @Get('/')
+    @Get('/list-users')
     @UseGuards(AdminPermissionGuard)
     async GetUser(){
         const data = await this.authService.getUser()
@@ -33,7 +33,7 @@ export class AuthController {
     }
 
     
-    @Put('/:id')
+    @Put('/users/:id')
     @UseGuards(AdminPermissionGuard)
     async UpdateUser(@Body() body: RegisterDto, @Param() params: any) {
         const data = await this.authService.updateUser(body, params.id)
@@ -41,7 +41,7 @@ export class AuthController {
     }
 
     
-    @Delete('/:id')
+    @Delete('/users/:id')
     @UseGuards(AdminPermissionGuard)
     async DeleteUser(@Param() params: any) {
         await this.authService.deleteUser(params.id)
@@ -63,10 +63,25 @@ export class AuthController {
     }
 
     
-    @Put('/store')
+    @Put('/store/:id')
     @UseGuards(AdminPermissionGuard)
     async updateStore(@Body() body : StoreDto,@Param() param : any){
         await this.authService.updateStore(body,param.id)
+        return('Update store successfully')
+    }
+
+    @Post('/store')
+    @UseGuards(AdminPermissionGuard)
+    async CreateStore(@Body() body : StoreDto,@Param() param : any){
+        await this.authService.createStore(body)
+        return 'Create store successfully'
+    }
+
+    @Delete('/store/:id')
+    @UseGuards(AdminPermissionGuard)
+    async DeleteStore(@Param() param : any){
+        await this.authService.deleteStore(param.id)
+        return 'Delete store successfully'
     }
 
     @Post('/register-admin')
@@ -79,4 +94,5 @@ export class AuthController {
        const token = await this.authService.loginAdmin(body)
        return token 
     }
-}
+    
+}   

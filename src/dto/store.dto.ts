@@ -20,6 +20,8 @@ export class StoreDto {
     @MinLength(6)
     @MaxLength(50)
     email: string
+
+    caculate_point_type : string
 }
 
 export class DiscountDto {

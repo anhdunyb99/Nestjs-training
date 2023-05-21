@@ -53,12 +53,13 @@ export class AuthService {
 
 
     async createUser(data: RegisterDto) {
-        console.log('data', data)
+        const condition = await this.userModel.findOne({where : {
+            username : data.username
+        }})
+        if(condition){
+            throw new BadRequestException(`Username exist`)
+        }
         await this.userModel.create(data)
-        /* await User.update(data, {
-            where : {id : 1}
-        }) */
-
     }
 
     async updateUser(data: any, userId: string) {
@@ -101,5 +102,20 @@ export class AuthService {
 
     async registerAdmin(registerDto : AdminDto){
         await this.adminModel.create(registerDto)
+    }
+
+    async createStore(storeDto : StoreDto){
+        const condition = await this.storeModel.findOne({where : {
+            username : storeDto.username
+        }})
+
+        if(condition){
+            throw new BadRequestException(`Username exist`)
+        }
+        await this.storeModel.create(storeDto)
+    }
+
+    async deleteStore(storeId : string){
+        await this.storeModel.destroy({where : {id : storeId}})
     }
 }
