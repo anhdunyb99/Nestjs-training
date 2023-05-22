@@ -109,7 +109,10 @@ export class RewardService {
     }
 
     async getRewardExchangeByUserId(userId : string) {
-        const result = await this.userModel.findByPk(userId,{include : [Reward]})
+        const result = await this.userRewardModel.findAll({
+            where: { userId: userId },
+            include: [Reward], 
+          });
         return result
         
     }

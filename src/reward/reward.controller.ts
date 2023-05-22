@@ -15,7 +15,8 @@ export class RewardController {
     }
 
     @Get('/:storeId')
-    @UseGuards(StorePermissionGuard)
+    /* @UseGuards(StorePermissionGuard)
+    @UseGuards(UserPermissionGuard) */
     async GetRewardByStoreId(@Param() param : any){
         const data = this.rewardService.getRewardByStoreId(param.storeId)
         return data
@@ -48,6 +49,7 @@ export class RewardController {
         console.log(body);
         
         await this.rewardService.exchangeReward(body.quantity,param.userId,param.rewardId)
+        return 'Exchange successfully'
     }
 
     @Get('/exchange/:userId')

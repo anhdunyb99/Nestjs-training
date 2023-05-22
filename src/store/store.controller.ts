@@ -1,6 +1,6 @@
 import { Injectable, Controller, Get, Param, Body, Response, Post, Put , UsePipes , ValidationPipe , UseGuards} from "@nestjs/common";
 import { StoreService } from "./store.service";
-import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto, VerifyOtpDto } from "src/dto/store.dto";
+import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto, VerifyOtpDto, sendEmailDto } from "src/dto/store.dto";
 import { EmailService } from "src/custom-service/email.service";
 import { StorePermissionGuard } from "src/guard/guard";
 @Controller('store')
@@ -32,7 +32,11 @@ export class StoreController {
         }
 
     }
-
+    
+    @Post('/send-mail/:id')
+    async sendEmail(@Param() param : any,@Body() body : sendEmailDto){
+        await this.mailService.sendEmail(body.email,param.id)
+    }
     @Put('/:id')
     @UseGuards(StorePermissionGuard)
     async updateStore(@Body() body: StoreDto, @Param() param: any) {

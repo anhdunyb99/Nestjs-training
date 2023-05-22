@@ -102,3 +102,9 @@ export class VerifyOtpDto {
     otp : string
 
 }
+
+export class sendEmailDto {
+    @IsNotEmpty()
+    email : string
+
+}

@@ -45,6 +45,7 @@ export class AuthController {
     @UseGuards(AdminPermissionGuard)
     async DeleteUser(@Param() params: any) {
         await this.authService.deleteUser(params.id)
+        return 'Delete user successfully'
     }
 
     
