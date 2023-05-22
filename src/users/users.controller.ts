@@ -33,5 +33,6 @@ export class UsersController {
         console.log(body, param);
 
         await this.smsService.verifyOtp(body.otp, param.id)
+        return 'Verify successfully'
     }
 }
