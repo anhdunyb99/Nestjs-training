@@ -1,7 +1,7 @@
 import { Injectable , Controller , Get , Param , Body , Response , Post, Put , Delete , UsePipes, ValidationPipe , UseGuards} from "@nestjs/common";
 import { RewardService } from "./reward.service";
 import { ExchangeDto, RewardDto } from "src/dto/reward.dto";
-import { StorePermissionGuard, UserPermissionGuard } from "src/auth/guard/guard";
+import { StorePermissionGuard, UserPermissionGuard } from "src/guard/guard";
 
 @Controller('reward')
 @UsePipes(new ValidationPipe())

@@ -8,7 +8,7 @@ import { Order } from "src/models/order";
 
 
 @Module({
-    imports : [SequelizeModule.forFeature([Store]),SequelizeModule.forFeature([User]),SequelizeModule.forFeature([Order])],
+    imports : [SequelizeModule.forFeature([Store,User,Order])],
     controllers : [OrderController],
     providers : [OrderService]
 })

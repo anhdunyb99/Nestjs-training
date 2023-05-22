@@ -1,8 +1,8 @@
 import { Injectable, Controller, Get, Param, Body, Response, Post, Put , UsePipes , ValidationPipe , UseGuards} from "@nestjs/common";
 import { StoreService } from "./store.service";
-import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto } from "src/dto/store.dto";
+import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto, VerifyOtpDto } from "src/dto/store.dto";
 import { EmailService } from "src/custom-service/email.service";
-import { StorePermissionGuard } from "src/auth/guard/guard";
+import { StorePermissionGuard } from "src/guard/guard";
 @Controller('store')
 @UsePipes(new ValidationPipe())
 
@@ -41,7 +41,7 @@ export class StoreController {
     }
 
     @Put('/verify-email/:id')
-    async verifyEmail(@Body() body : any ,@Param() param: any) {
+    async verifyEmail(@Body() body : VerifyOtpDto ,@Param() param: any) {
         await this.storeService.verifyEmail(body.otp,param.id)
         return 'Verify successfully'
     }

@@ -94,3 +94,11 @@ export class StoreLoginDto {
     @MaxLength(20)
     password : string
 }
+
+export class VerifyOtpDto {
+    @IsNotEmpty()
+    @MinLength(6)
+    @MaxLength(20)
+    otp : string
+
+}

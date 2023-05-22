@@ -2,10 +2,10 @@ import { Controller, Post, Get, Inject, Body, UseGuards, UseFilters, UseIntercep
 import { AuthService } from './auth.service';
 import { RegisterDto } from 'src/dto/register.dto';
 import { CustomDecorator } from 'src/custom-decorator/custom.decorator';
-import { SmsService } from './twilio.service';
+import { SmsService } from '../custom-service/twilio.service';
 import { StoreDto } from 'src/dto/store.dto';
 import { AdminDto } from 'src/dto/admin.dto';
-import { AdminPermissionGuard } from './guard/guard';
+import { AdminPermissionGuard } from '../guard/guard';
 
 @Controller('admin')
 @UsePipes(new ValidationPipe())
