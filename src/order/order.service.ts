@@ -24,20 +24,20 @@ export class OrderService {
     async createOrder(userId: string, storeId: string, totalMoney: number) {
         //check rank va update rank user
         const user = await this.userModel.findOne({ where: { id: userId } })
-        const user_total_point = user.point_used1 + user.point
+        const user_total_point = user.pointUsed1 + user.point
         console.log('user_total_point',user_total_point);
         
         if(user_total_point < 2000){
-            await this.userModel.update({loyal_type : 'Bronze'},{where : {id : userId}})
+            await this.userModel.update({loyalType : 'Bronze'},{where : {id : userId}})
         } else if (user_total_point >= 2000 && user_total_point < 5000){         
-            await this.userModel.update({loyal_type : 'Silver'},{where : {id : userId}})
+            await this.userModel.update({loyalType : 'Silver'},{where : {id : userId}})
         } else {
-            await this.userModel.update({loyal_type : 'Gold'},{where : {id : userId}})
+            await this.userModel.update({loyalType : 'Gold'},{where : {id : userId}})
         }
 
         // get new rank
         const newUser = await this.userModel.findOne({ where: { id: userId } })
-        const loyal_type = newUser.loyal_type
+        const loyal_type = newUser.loyalType
 
         //Check xem store ap dung loai tinh diem nao
         const store = await this.storeModel.findOne({ where: { id: storeId } })
@@ -49,7 +49,7 @@ export class OrderService {
                     case 'Bronze':
                         if (totalMoney > store.minium_money) {
                             // tong diem
-                            let totalpoint = newUser.point + store.bronze_default_point
+                            const totalpoint = newUser.point + store.bronze_default_point
                             await this.userModel.update({
                                 point: totalpoint
                             }, { where: { id: userId } })
@@ -57,15 +57,15 @@ export class OrderService {
                             await this.orderModel.create({
                                 storeId : storeId,
                                 userId : userId,
-                                total_money : totalMoney,
-                                total_point : store.bronze_default_point
+                                totalMoney : totalMoney,
+                                totalPoint : store.bronze_default_point
                             })
                         }
                         break;
                     case 'Silver':
                         if (totalMoney > store.minium_money) {
                             // tong diem
-                            let totalpoint = newUser.point + store.silver_default_point
+                            const totalpoint = newUser.point + store.silver_default_point
                             await this.userModel.update({
                                 point: totalpoint
                             }, { where: { id: userId } })
@@ -73,15 +73,15 @@ export class OrderService {
                             await this.orderModel.create({
                                 storeId : storeId,
                                 userId : userId,
-                                total_money : totalMoney,
-                                total_point : store.silver_default_point
+                                totalMoney : totalMoney,
+                                totalPoint : store.silver_default_point
                             })
                         }
                         break;
                     case 'Gold':
                         if (totalMoney > store.minium_money) {
                             // tong diem
-                            let totalpoint = newUser.point + store.gold_default_point
+                            const totalpoint = newUser.point + store.gold_default_point
                             await this.userModel.update({
                                 point: totalpoint
                             }, { where: { id: userId } })
@@ -89,8 +89,8 @@ export class OrderService {
                             await this.orderModel.create({
                                 storeId : storeId,
                                 userId : userId,
-                                total_money : totalMoney,
-                                total_point : store.gold_default_point
+                                totalMoney : totalMoney,
+                                totalPoint : store.gold_default_point
                             })
                         }
                         break;
@@ -101,14 +101,14 @@ export class OrderService {
                     case 'Bronze':
                         if(totalMoney > store.minium_money){
                             //tinh so diem nhan duoc
-                            let expectedPoint = (totalMoney * store.brozne_discount)/100
+                            const expectedPoint = (totalMoney * store.brozne_discount)/100
                             let actualPoint = 0
                             if(expectedPoint > store.bronze_max_point){
                                 actualPoint = store.bronze_max_point
                             } else {
                                 actualPoint = expectedPoint
                             }
-                            let totalPoint = newUser.point + actualPoint
+                            const totalPoint = newUser.point + actualPoint
                             // luu vao db
                             await this.userModel.update({
                                 point : totalPoint
@@ -117,8 +117,8 @@ export class OrderService {
                             await this.orderModel.create({
                                 storeId : storeId,
                                 userId : userId,
-                                total_money : totalMoney,
-                                total_point : actualPoint
+                                totalMoney : totalMoney,
+                                totalPoint : actualPoint
                             })
 
                         }
@@ -126,7 +126,7 @@ export class OrderService {
                     case 'Silver':
                         if(totalMoney > store.minium_money){
                             //tinh so diem nhan duoc
-                            let expectedPoint = (totalMoney * store.silver_discount)/100
+                            const expectedPoint = (totalMoney * store.silver_discount)/100
                             let actualPoint = 0
                             if(expectedPoint > store.silver_max_point){
                                 actualPoint = store.silver_max_point
@@ -142,8 +142,8 @@ export class OrderService {
                             await this.orderModel.create({
                                 storeId : storeId,
                                 userId : userId,
-                                total_money : totalMoney,
-                                total_point : actualPoint
+                                totalMoney : totalMoney,
+                                totalPoint : actualPoint
                             })
                         }    
                     break;
@@ -166,8 +166,8 @@ export class OrderService {
                             await this.orderModel.create({
                                 storeId : storeId,
                                 userId : userId,
-                                total_money : totalMoney,
-                                total_point : actualPoint
+                                totalMoney : totalMoney,
+                                totalPoint : actualPoint
                             })
                         }
                     break;   

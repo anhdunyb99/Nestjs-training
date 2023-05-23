@@ -20,11 +20,11 @@ export class Reward extends Model<Reward> {
     @Column
     storeId: string;
 
-    @Column
-    from_date: Date;
+    @Column({field : 'from_date'})
+    fromDate: Date;
 
-    @Column
-    to_date: Date;
+    @Column({field : 'to_date'})
+    toDate: Date;
 
     @Column
     description: string;

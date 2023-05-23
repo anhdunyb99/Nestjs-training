@@ -33,7 +33,7 @@ export class UserService {
                 process.env.REFRESH_TOKEN, { expiresIn: '7d' }
             );
 
-            await this.userModel.update({refresh_token : refreshToken},{where : {id : condition.id}})
+            await this.userModel.update({refreshToken : refreshToken},{where : {id : condition.id}})
             return accessToken
         } else {
             throw new UnauthorizedException(`Your account is not active yet`)

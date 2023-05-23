@@ -14,11 +14,11 @@ export class Order extends Model<Order> {
   @Column   
   storeId : string;
 
-  @Column
-  total_money : number;
+  @Column({field : 'total_money'})
+  totalMoney: number;
 
-  @Column
-  total_point : number;
+  @Column({field : 'total_point'})
+  totalPoint : number;
 
   @BelongsTo(() => User)
   user: User;

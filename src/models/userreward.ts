@@ -17,8 +17,8 @@ export class UserReward extends Model<UserReward> {
   @Column
   quantity : number;
 
-  @Column
-  total_point : number;
+  @Column({field : 'total_point'})
+  totalPoint : number;
 
   @BelongsTo(() => User)
   user: User;

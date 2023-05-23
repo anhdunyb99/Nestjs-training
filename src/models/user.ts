@@ -34,20 +34,21 @@ export class User extends Model<User> {
   isActive : boolean
 
   @Column({
-    type : DataType.ENUM('Gold', 'Silver', 'Bronze')
+    type : DataType.ENUM('Gold', 'Silver', 'Bronze'),
+    field : 'loyal_type'
   })
-  loyal_type: string;
+  loyalType: string;
   @Column 
   otp : string
 
-  @Column 
-  exprise_date : Date
+  @Column({field : 'exprise_date'})
+  expriseDate : Date
 
-  @Column
-  point_used1 : number
+  @Column({field : 'point_used1'})
+  pointUsed1 : number
 
-  @Column
-  refresh_token : string
+  @Column({field : 'refresh_token'})
+  refreshToken : string
 
 
   @BelongsToMany(() => Reward, () => UserReward)

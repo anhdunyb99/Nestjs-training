@@ -72,7 +72,7 @@ export class RewardService {
 
             // check thoi gian doi thuong
             const now = new Date()
-            if (now < reward.from_date || now > reward.to_date) {
+            if (now < reward.fromDate || now > reward.toDate) {
                 throw new BadRequestException(`Reward exchange time has expired`)
             }
             // check user remain point
@@ -83,11 +83,11 @@ export class RewardService {
             // all good
             const remainPoint = user.point - quantity * reward.point
             // tong so diem user da dung tu truoc den nay
-            const pointUsed = user.point_used1 + quantity * reward.point
-            
+            const pointUsed = user.pointUsed1 + quantity * reward.point
+
             const remainQuantity = reward.quantity - quantity
-            
-            await user.update({ point: remainPoint ,point_used1 : pointUsed}, { transaction: t })
+
+            await user.update({ point: remainPoint, pointUsed1: pointUsed }, { transaction: t })
             await user.reload({ transaction: t });
             await reward.update({ quantity: remainQuantity }, { transaction: t })
             await reward.reload({ transaction: t });
@@ -95,26 +95,21 @@ export class RewardService {
                 userId: userId,
                 rewardId: rewardId,
                 quantity: quantity,
-                total_point: quantity * reward.point
+                totalPoint: quantity * reward.point
             }, { transaction: t })
-
             // Commit transaction
             await t.commit();
-            
-            
         } catch (error) {
             await t.rollback();
             throw new BadRequestException(`Exchange reward fail`)
         }
     }
 
-    async getRewardExchangeByUserId(userId : string) {
+    async getRewardExchangeByUserId(userId: string) {
         const result = await this.userRewardModel.findAll({
             where: { userId: userId },
-            include: [Reward], 
-          });
+            include: [Reward],
+        });
         return result
-        
     }
-    
 }

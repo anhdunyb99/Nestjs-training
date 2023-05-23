@@ -46,7 +46,7 @@ export class StoreService {
                 { storeId: condition.id },
                 process.env.REFRESH_TOKEN, { expiresIn: '7d' }
             );
-            await this.storeModel.update({refresh_token : refreshToken},{where : {id : condition.id}})
+            await this.storeModel.update({refreshToken : refreshToken},{where : {id : condition.id}})
             return accessToken
         } else {
             throw new UnauthorizedException(`Your account is not active yet`)

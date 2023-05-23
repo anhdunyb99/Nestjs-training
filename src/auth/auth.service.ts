@@ -45,7 +45,7 @@ export class AuthService {
                 process.env.REFRESH_TOKEN, { expiresIn: '7d' }
             );
 
-            await this.adminModel.update({refresh_token : refreshToken},{where : {id : condition.id}})
+            await this.adminModel.update({refreshToken : refreshToken},{where : {id : condition.id}})
             return accessToken
         }
     }

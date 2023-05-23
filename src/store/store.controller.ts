@@ -1,4 +1,4 @@
-import { Injectable, Controller, Get, Param, Body, Response, Post, Put , UsePipes , ValidationPipe , UseGuards} from "@nestjs/common";
+import { Injectable, Controller, Get, Param, Body, Response, Post, Put , UsePipes , ValidationPipe , UseGuards , Request} from "@nestjs/common";
 import { StoreService } from "./store.service";
 import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto, VerifyOtpDto, sendEmailDto } from "src/dto/store.dto";
 import { EmailService } from "src/custom-service/email.service";
@@ -11,14 +11,20 @@ export class StoreController {
     
     @Get('/:id')
     @UseGuards(StorePermissionGuard)
-    async GetStore(@Param() param : any) {
+    async GetStore(@Param() param : any , @Request() req) {
+        if(req.store.storeId != param.id){
+            return 'You do not have permission'
+        }
         const data = this.storeService.getStoreById(param.id)
         return data
     }
 
     @Get('/list-customer/:id')
     @UseGuards(StorePermissionGuard)
-    async getListCustomer(@Param() param : any){
+    async getListCustomer(@Param() param : any, @Request() req){
+        if(req.store.storeId != param.id){
+            return 'You do not have permission'
+        }
         const data = this.storeService.getListCustomer(param.id)
         return data
     }
@@ -39,7 +45,10 @@ export class StoreController {
     }
     @Put('/:id')
     @UseGuards(StorePermissionGuard)
-    async updateStore(@Body() body: StoreDto, @Param() param: any) {
+    async updateStore(@Body() body: StoreDto, @Param() param: any, @Request() req) {
+        if(req.store.storeId != param.id){
+            return 'You do not have permission'
+        }
         await this.storeService.updateStore(body, param.id)
 
     }
@@ -52,7 +61,10 @@ export class StoreController {
 
     @Put('/default-rate/:id')
     @UseGuards(StorePermissionGuard)
-    async CreateDefaultRate(@Body() body : DefaultDto,@Param() param : any){
+    async CreateDefaultRate(@Body() body : DefaultDto,@Param() param : any, @Request() req){
+        if(req.store.storeId != param.id){
+            return 'You do not have permission'
+        }
         await this.storeService.createDefaultRate(param.id,body)
         return 'Create default rate successfully'
     }

@@ -63,8 +63,8 @@ export class Store extends Model<Store> {
   @Column
   gold_max_point : number;
 
-  @Column
-  refresh_token : string
+  @Column({field : 'refresh_token'})
+  refreshToken : string
 
 
   @BelongsToMany(() => User, () => Order)

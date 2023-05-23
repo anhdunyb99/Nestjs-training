@@ -9,7 +9,7 @@ export class Admin extends Model<Admin> {
   @Column
   password : string;
 
-  @Column
-  refresh_token : string
+  @Column({ field: 'refresh_token' })
+  refreshToken: string;
 
 }

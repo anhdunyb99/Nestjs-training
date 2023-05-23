@@ -24,7 +24,9 @@ export class UserPermissionGuard implements CanActivate {
 
     // check user co ton tai khong
     const condition = await this.userModel.findByPk(decoded.userId)
-
+    request['user'] = decoded
+   
+    
     if(condition){
       return true
     } else {
@@ -46,11 +48,11 @@ export class StorePermissionGuard implements CanActivate {
     const request = context.switchToHttp().getRequest();
     const token = request.headers.authorization?.split(' ')[1]
     const decoded = jwt.verify(token, process.env.ACCESS_TOKEN)
-    console.log(decoded);
+    
     
     // check user co ton tai khong
     const condition = await this.storeModel.findByPk(decoded.storeId)
-
+    request['store'] = decoded
     if(condition){
       return true
     } else {

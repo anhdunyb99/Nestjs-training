@@ -27,12 +27,12 @@ export class SmsService {
     const now = new Date()
     const condition = await this.userModel.findOne({ where : {
       id : userId,
-      exprise_date : {
+      expriseDate : {
         [Op.gt] : now
       }
     }})
     if(condition){
-      throw new ForbiddenException(`Sau ${(Math.floor(condition.exprise_date.getTime() / 1000))-(Math.floor(now.getTime() / 1000))} giây có thể gửi lại OTP`)
+      throw new ForbiddenException(`Sau ${(Math.floor(condition.expriseDate.getTime() / 1000))-(Math.floor(now.getTime() / 1000))} giây có thể gửi lại OTP`)
     }
 
     const otp = generateOtp(); // Your OTP generation logic
@@ -51,7 +51,7 @@ export class SmsService {
   expireDate.setMinutes(expireDate.getMinutes() + 3); // Thời gian hiệu lực: 3 phút
 
 
-    await this.userModel.update({otp : otp,exprise_date : expireDate}, {where : {id : userId}})
+    await this.userModel.update({otp : otp,expriseDate : expireDate}, {where : {id : userId}})
   }
 
 
@@ -61,7 +61,7 @@ export class SmsService {
       where : {
         otp : data,
         id : userId,
-        exprise_date : {
+        expriseDate : {
           [Op.gt] : now
         }
       }
