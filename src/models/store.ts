@@ -1,6 +1,8 @@
 import { Column, Model, Table, ForeignKey, BelongsTo , DataType, HasMany, BelongsToMany } from 'sequelize-typescript';
 import { Order } from './order';
 import { User } from './user';
+import { Promotion } from './promotion';
+import { Rank } from './rank';
 
 @Table
 export class Store extends Model<Store> {
@@ -69,4 +71,7 @@ export class Store extends Model<Store> {
 
   @BelongsToMany(() => User, () => Order)
   users: User[];
+
+  @BelongsToMany(() => Rank, () => Promotion)
+  ranks: Rank[];
 }

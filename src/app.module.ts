@@ -14,6 +14,9 @@ import { UserReward } from './models/userreward';
 import { Admin } from './models/admin';
 import { RewardModule } from './reward/reward.module';
 import { OrderModule } from './order/order.module';
+import { Promotion } from './models/promotion';
+import { Rank } from './models/rank';
+import { RankModule } from './rank/rank.module';
 @Module({
   imports: [
       SequelizeModule.forRoot({
@@ -23,9 +26,9 @@ import { OrderModule } from './order/order.module';
         username: 'root',
         password: "",
         database: 'db_nestjs',
-        models: [User,Store,Order,Reward,UserReward,Admin],
+        models: [User,Store,Order,Reward,UserReward,Admin,Promotion,Rank],
       })   
-    ,UserModule , AuthModule,StoreModule,RewardModule,OrderModule],
+    ,UserModule , AuthModule,StoreModule,RewardModule,OrderModule,RankModule],
   controllers: [AppController],
   providers: [AppService],
 })
