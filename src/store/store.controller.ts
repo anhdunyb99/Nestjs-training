@@ -1,11 +1,12 @@
-import { Injectable, Controller, Get, Param, Body, Response, Post, Put , UsePipes , ValidationPipe , UseGuards , Request} from "@nestjs/common";
+import { Injectable, Controller, Get, Param, Body, Response, Post, Put , UsePipes , ValidationPipe,  UseFilters, UseGuards , Request , ForbiddenException} from "@nestjs/common";
 import { StoreService } from "./store.service";
-import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto, VerifyOtpDto, sendEmailDto } from "src/dto/store.dto";
+import { PromotionDto, StoreDto, StoreLoginDto, VerifyOtpDto, sendEmailDto } from "src/dto/store.dto";
 import { EmailService } from "src/custom-service/email.service";
 import { StorePermissionGuard } from "src/guard/guard";
+import { HttpExceptionFilter } from "src/https/execption.filter";
 @Controller('store')
 @UsePipes(new ValidationPipe())
-
+@UseFilters(HttpExceptionFilter)
 export class StoreController {
     constructor(private readonly storeService: StoreService, private readonly mailService: EmailService) { }
     
@@ -59,21 +60,14 @@ export class StoreController {
         return 'Verify successfully'
     }
 
-    @Put('/default-rate/:id')
+    @Post('/promotion/:rankId/:storeId')
     @UseGuards(StorePermissionGuard)
-    async CreateDefaultRate(@Body() body : DefaultDto,@Param() param : any, @Request() req){
-        if(req.store.storeId != param.id){
-            return 'You do not have permission'
+    async CreatePromotion(@Body() body : PromotionDto,@Param() param : any, @Request() req){
+        if(req.store.storeId != param.storeId){
+            throw new ForbiddenException(`You do not have permission`)
         }
-        await this.storeService.createDefaultRate(param.id,body)
-        return 'Create default rate successfully'
-    }
-
-    @Put('/discount-rate/:id')
-    @UseGuards(StorePermissionGuard)
-    async CreateDiscountRate(@Body() body : DiscountDto,@Param() param : any){
-        await this.storeService.createDiscountRate(param.id,body)
-        return 'Create discount rate successfully'
+        await this.storeService.createPromotion(body,param.storeId,param.rankId)
+        return 'Create promotion  successfully'
     }
 
     @Post('/login')

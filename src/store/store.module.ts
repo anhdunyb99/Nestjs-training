@@ -4,8 +4,9 @@ import { StoreController } from "./store.controller";
 import { SequelizeModule } from "@nestjs/sequelize";
 import { Store } from "src/models/store";
 import { EmailService } from "src/custom-service/email.service";
+import { Promotion } from "src/models/promotion";
 @Module({
-    imports: [SequelizeModule.forFeature([Store])],
+    imports: [SequelizeModule.forFeature([Store,Promotion])],
     controllers : [StoreController],
     providers : [StoreService , EmailService]
 })

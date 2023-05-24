@@ -1,6 +1,6 @@
 import { Injectable , Controller ,UsePipes ,ValidationPipe, Get , Param , Body , Response , Post , UseGuards} from "@nestjs/common";
 import { OrderService } from "./order.service";
-import { UserPermissionGuard } from "src/guard/guard";
+import { StorePermissionGuard, UserPermissionGuard } from "src/guard/guard";
 import { OrderDto } from "src/dto/order.dto";
 
 
@@ -13,7 +13,7 @@ export class OrderController {
     async GetOrder () {
         await this.orderService.getOrder()
     }
-    @UseGuards(UserPermissionGuard)
+    @UseGuards(StorePermissionGuard)
     @Post('/:userId/:storeId') 
     async CreateOrder (@Body() body : OrderDto, @Param() param : any) {
         await this.orderService.createOrder(param.userId,param.storeId,body.total_money)

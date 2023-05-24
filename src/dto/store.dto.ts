@@ -24,63 +24,14 @@ export class StoreDto {
     caculate_point_type : string
 }
 
-export class DiscountDto {
+export class PromotionDto {
     @IsNumber()
     @Min(0)
     @Max(100)
-    brozne_discount: number
+    discountRate: number
 
     @IsNumber()
-    @Min(0)
-    @Max(100)
-    silver_discount: number
-
-    @IsNumber()
-    @Min(0)
-    @Max(100)
-    gold_discount: number
-
-    @IsNumber()
-    @IsNumber()
-    @Min(0)
-    bronze_max_point: number;
-
-    @IsNumber()
-    @IsNumber()
-    @Min(0)
-    silver_max_point: number;
-
-    @IsNumber()
-    @IsNumber()
-    @Min(0)
-    gold_max_point: number;
-
-    @IsNumber()
-    @IsNumber()
-    @Min(0)
-    minium_money: number;
-}
-
-export class DefaultDto {
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(0)
-    bronze_default_point : number;
-  
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(0)
-    silver_default_point : number;
-  
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(0)
-    gold_default_point : number;
-
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(0)
-    minium_money: number;
+    pointBonus: number
 }
 
 export class StoreLoginDto {

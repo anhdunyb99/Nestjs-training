@@ -19,6 +19,9 @@ export class Promotion extends Model<Promotion> {
   @Column({field : 'point_bonus'})
   pointBonus : number;
 
+  @Column({field : 'max_point'})
+  maxPoint : number
+
   @BelongsTo(() => Rank)
   rank: Rank;
 

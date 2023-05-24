@@ -3,7 +3,6 @@ import * as jwt from 'jsonwebtoken'
 import { Response } from 'express';
 import { InjectModel } from '@nestjs/sequelize';
 import { HttpExceptionFilter } from 'src/https/execption.filter';
-import { AdditionalInfoInterceptor } from './additional-info/additional-info.interceptor';
 import { RegisterDto } from 'src/dto/register.dto';
 import { Sequelize } from 'sequelize-typescript';
 /* import { User } from '../models/user'

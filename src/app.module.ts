@@ -2,7 +2,7 @@ import { Module , NestModule , MiddlewareConsumer} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { UserModule } from './users/users.module';
-import { AuthModule } from './auth/auth.module';
+import { AuthModule } from './admin/admin.module';
 import { StoreModule } from './store/store.module';
 import { AuthMiddleware } from './middleware/middleware';
 import { SequelizeModule } from '@nestjs/sequelize';

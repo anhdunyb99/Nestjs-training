@@ -2,6 +2,8 @@ import { Injectable, UseFilters } from "@nestjs/common";
 import { InjectModel } from "@nestjs/sequelize";
 import { HttpExceptionFilter } from "src/https/execption.filter";
 import { Order } from "src/models/order";
+import { Promotion } from "src/models/promotion";
+import { Rank } from "src/models/rank";
 import { Store } from "src/models/store";
 import { User } from "src/models/user";
 
@@ -15,6 +17,10 @@ export class OrderService {
         private readonly userModel: typeof User,
         @InjectModel(Order)
         private readonly orderModel: typeof Order,
+        @InjectModel(Rank)
+        private readonly rankModel: typeof Rank,
+        @InjectModel(Promotion)
+        private readonly promotionModel: typeof Promotion,
     ) { }
 
     async getOrder() {
@@ -24,48 +30,56 @@ export class OrderService {
     async createOrder(userId: string, storeId: string, totalMoney: number) {
         //check rank va update rank user
         const user = await this.userModel.findOne({ where: { id: userId } })
-        const user_total_point = user.pointUsed1 + user.point
-        console.log('user_total_point',user_total_point);
+        const bronzeRank = await this.rankModel.findOne({ where : {rank : 'Bronze'}})
+        const silverRank = await this.rankModel.findOne({ where : {rank : 'Silver'}})
+        const goldRank = await this.rankModel.findOne({ where : {rank : 'Gold'}})
+        const userTotalPoint = user.pointUsed1 + user.point
+        console.log('user_total_point',userTotalPoint);
         
-        if(user_total_point < 2000){
-            await this.userModel.update({loyalType : 'Bronze'},{where : {id : userId}})
-        } else if (user_total_point >= 2000 && user_total_point < 5000){         
-            await this.userModel.update({loyalType : 'Silver'},{where : {id : userId}})
+        if(userTotalPoint < silverRank.point){
+            await this.userModel.update({rankId : bronzeRank.id},{where : {id : userId}})
+        } else if (userTotalPoint >= silverRank.point && userTotalPoint < goldRank.point){         
+            await this.userModel.update({rankId : silverRank.id},{where : {id : userId}})
         } else {
-            await this.userModel.update({loyalType : 'Gold'},{where : {id : userId}})
+            await this.userModel.update({rankId : goldRank.id},{where : {id : userId}})
         }
 
         // get new rank
         const newUser = await this.userModel.findOne({ where: { id: userId } })
-        const loyal_type = newUser.loyalType
-
+        const userRank = newUser.rankId
+        console.log('bronzeRank',typeof(bronzeRank.id));
+        
         //Check xem store ap dung loai tinh diem nao
         const store = await this.storeModel.findOne({ where: { id: storeId } })
-        const caculate_point_type = store.caculate_point_type
+
+        //get promotion
+        const bronzePromotion = await this.promotionModel.findOne({ where : { rankId : bronzeRank.id, storeId : storeId}})
+        const silverPromotion = await this.promotionModel.findOne({ where : { rankId : silverRank.id, storeId : storeId}})
+        const goldPromotion = await this.promotionModel.findOne({ where : { rankId : goldRank.id, storeId : storeId}})
         
-        switch (caculate_point_type) {
+        switch (store.calculatePointType) {
             case 'Default':
-                switch (loyal_type) {
-                    case 'Bronze':
-                        if (totalMoney > store.minium_money) {
-                            // tong diem
-                            const totalpoint = newUser.point + store.bronze_default_point
+                switch (userRank) {
+                    case bronzeRank.id.toString():
+                        if (totalMoney > store.miniumMoney) {
+                            // tong diem                         
+                            const totalPoint = newUser.point + bronzePromotion.pointBonus
                             await this.userModel.update({
-                                point: totalpoint
+                                point: totalPoint
                             }, { where: { id: userId } })
 
                             await this.orderModel.create({
                                 storeId : storeId,
                                 userId : userId,
                                 totalMoney : totalMoney,
-                                totalPoint : store.bronze_default_point
+                                totalPoint : bronzePromotion.pointBonus
                             })
                         }
                         break;
-                    case 'Silver':
-                        if (totalMoney > store.minium_money) {
+                    case silverRank.id.toString():
+                        if (totalMoney > store.miniumMoney) {
                             // tong diem
-                            const totalpoint = newUser.point + store.silver_default_point
+                            const totalpoint = newUser.point + silverPromotion.pointBonus
                             await this.userModel.update({
                                 point: totalpoint
                             }, { where: { id: userId } })
@@ -74,14 +88,14 @@ export class OrderService {
                                 storeId : storeId,
                                 userId : userId,
                                 totalMoney : totalMoney,
-                                totalPoint : store.silver_default_point
+                                totalPoint : silverPromotion.pointBonus
                             })
                         }
                         break;
-                    case 'Gold':
-                        if (totalMoney > store.minium_money) {
+                    case goldRank.id.toString():
+                        if (totalMoney > store.miniumMoney) {
                             // tong diem
-                            const totalpoint = newUser.point + store.gold_default_point
+                            const totalpoint = newUser.point + goldPromotion.pointBonus
                             await this.userModel.update({
                                 point: totalpoint
                             }, { where: { id: userId } })
@@ -90,21 +104,21 @@ export class OrderService {
                                 storeId : storeId,
                                 userId : userId,
                                 totalMoney : totalMoney,
-                                totalPoint : store.gold_default_point
+                                totalPoint : goldPromotion.pointBonus
                             })
                         }
                         break;
                 }
             break;
             case 'Discount':
-                switch(loyal_type){
-                    case 'Bronze':
-                        if(totalMoney > store.minium_money){
+                switch(userRank){
+                    case bronzeRank.id.toString():
+                        if(totalMoney > store.miniumMoney){
                             //tinh so diem nhan duoc
-                            const expectedPoint = (totalMoney * store.brozne_discount)/100
+                            const expectedPoint = (totalMoney * bronzePromotion.discountRate)/100
                             let actualPoint = 0
-                            if(expectedPoint > store.bronze_max_point){
-                                actualPoint = store.bronze_max_point
+                            if(expectedPoint > bronzePromotion.maxPoint){
+                                actualPoint = bronzePromotion.maxPoint
                             } else {
                                 actualPoint = expectedPoint
                             }
@@ -123,13 +137,13 @@ export class OrderService {
 
                         }
                     break;
-                    case 'Silver':
-                        if(totalMoney > store.minium_money){
+                    case silverRank.id.toString():
+                        if(totalMoney > store.miniumMoney){
                             //tinh so diem nhan duoc
-                            const expectedPoint = (totalMoney * store.silver_discount)/100
+                            const expectedPoint = (totalMoney * silverPromotion.discountRate)/100
                             let actualPoint = 0
-                            if(expectedPoint > store.silver_max_point){
-                                actualPoint = store.silver_max_point
+                            if(expectedPoint > silverPromotion.maxPoint){
+                                actualPoint = silverPromotion.maxPoint
                             } else {
                                 actualPoint = expectedPoint
                             }
@@ -147,13 +161,13 @@ export class OrderService {
                             })
                         }    
                     break;
-                    case 'Gold':
-                        if(totalMoney > store.minium_money){
+                    case goldRank.id.toString():
+                        if(totalMoney > store.miniumMoney){
                             //tinh so diem nhan duoc
-                            let expectedPoint = (totalMoney * store.gold_discount)/100
+                            let expectedPoint = (totalMoney * goldPromotion.discountRate)/100
                             let actualPoint = 0
-                            if(expectedPoint > store.gold_max_point){
-                                actualPoint = store.gold_max_point
+                            if(expectedPoint > goldPromotion.maxPoint){
+                                actualPoint = goldPromotion.maxPoint
                             } else {
                                 actualPoint = expectedPoint
                             }

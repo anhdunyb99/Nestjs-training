@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, UseFilters , UnauthorizedException } from "@nestjs/common";
 import { InjectModel } from '@nestjs/sequelize';
-import { DefaultDto, DiscountDto, StoreDto, StoreLoginDto } from "src/dto/store.dto";
+import { PromotionDto, StoreDto, StoreLoginDto } from "src/dto/store.dto";
 import { HttpExceptionFilter } from "src/https/execption.filter";
 import { Store } from "src/models/store";
 import { Op } from "sequelize";
@@ -8,6 +8,7 @@ import { User } from "src/models/user";
 import { Reward } from "src/models/reward";
 import * as jwt from 'jsonwebtoken'
 import * as dotenv from 'dotenv'
+import { Promotion } from "src/models/promotion";
 dotenv.config()
 @Injectable()
 @UseFilters(HttpExceptionFilter)
@@ -15,6 +16,9 @@ export class StoreService {
     constructor(
         @InjectModel(Store)
         private readonly storeModel: typeof Store,
+
+        @InjectModel(Promotion)
+        private readonly promotionModel: typeof Promotion,
     ) { }
 
     async getStoreById(storeId : string) {
@@ -102,24 +106,23 @@ export class StoreService {
         }
     }
 
-    async createDefaultRate(storeId: string, defaultDto: DefaultDto) {
-        await this.storeModel.update({
-            bronze_default_point: defaultDto.bronze_default_point,
-            silver_default_point: defaultDto.silver_default_point,
-            gold_default_point: defaultDto.gold_default_point,
-            minium_money: defaultDto.minium_money
-        }, { where: { id: storeId } })
+
+    async createPromotion(promotion : PromotionDto,storeId: string,rankId : string) {
+        const condition = await this.promotionModel.findOne({ where : {
+            storeId : storeId,
+            rankId : rankId
+        }})
+        if(condition){
+            throw new BadRequestException(`Promotion exist`)
+        }
+        await this.promotionModel.create({
+            storeId : storeId,
+            rankId : rankId,
+            discountRate : promotion.discountRate,
+            pointBonus : promotion.pointBonus
+        })
+
     }
 
-    async createDiscountRate(storeId: string, discountDto: DiscountDto) {
-        await this.storeModel.update({
-            brozne_discount: discountDto.brozne_discount,
-            silver_discount: discountDto.silver_discount,
-            gold_discount: discountDto.gold_discount,
-            bronze_max_point: discountDto.bronze_max_point,
-            silver_max_point: discountDto.silver_max_point,
-            gold_max_point: discountDto.gold_discount,
-            minium_money: discountDto.minium_money
-        }, { where: { id: storeId } })
-    }
+    
 }

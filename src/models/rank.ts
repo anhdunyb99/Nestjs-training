@@ -10,7 +10,7 @@ export class Rank extends Model<Rank> {
   rank : string;
 
   @Column
-  point : string;
+  point : number;
 
   @BelongsToMany(() => Store, () => Promotion)
     stores: Store[];

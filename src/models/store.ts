@@ -22,9 +22,10 @@ export class Store extends Model<Store> {
   email : string;
 
   @Column({
-    type : DataType.ENUM('Default', 'Discount')
+    type : DataType.ENUM('Default', 'Discount'),
+    field : 'caculate_point_type'
   })
-  caculate_point_type : string;
+  calculatePointType : string;
 
   @Column
   otp : string;
@@ -44,8 +45,8 @@ export class Store extends Model<Store> {
   @Column
   gold_discount : number;
 
-  @Column
-  minium_money : number;
+  @Column({field : 'minium_money'})
+  miniumMoney : number;
 
   @Column
   bronze_default_point : number;
