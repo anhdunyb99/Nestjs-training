@@ -28,6 +28,5 @@ export class RegisterDto {
     @IsNotEmpty()
     point : number
 
-    loyal_type : string
 
 }

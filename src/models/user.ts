@@ -34,11 +34,6 @@ export class User extends Model<User> {
   @Column
   isActive: boolean
 
-  @Column({
-    type: DataType.ENUM('Gold', 'Silver', 'Bronze'),
-    field: 'loyal_type'
-  })
-  loyalType: string;
   @Column
   otp: string
 

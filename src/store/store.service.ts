@@ -28,7 +28,7 @@ export class StoreService {
     async getListCustomer(storeId : string){
         const result = await this.storeModel.findByPk(storeId,{include: [{
             model: User,
-            attributes: ['firstName','lastName','email','phoneNumber','loyal_type'],
+            attributes: ['firstName','lastName','email','phoneNumber'],
           }]})
         return result
     }
@@ -62,10 +62,12 @@ export class StoreService {
             throw new BadRequestException(`Invalid username or password`)
         }
 
+        
+
         // check trung ten
         const condition = await this.storeModel.findOne({
             where: {
-                username: storeRegisterDto.username
+                username: storeRegisterDto.username,
             }
         })
 
@@ -73,6 +75,16 @@ export class StoreService {
             throw new BadRequestException(`Username exist`)
         }
 
+        //check trung email
+        const emailExist = await this.storeModel.findOne({
+            where: {
+                email: storeRegisterDto.email,
+            }
+        })
+
+        if(emailExist){
+            throw new BadRequestException(`Email exist`)
+        }
         // check 
         //all good 
         // hash password

@@ -36,35 +36,10 @@ export class Store extends Model<Store> {
   @Column
   otp_exprise : Date;
 
-  @Column
-  brozne_discount : number;
-
-  @Column
-  silver_discount : number;
-
-  @Column
-  gold_discount : number;
 
   @Column({field : 'minium_money'})
   miniumMoney : number;
 
-  @Column
-  bronze_default_point : number;
-
-  @Column
-  silver_default_point : number;
-
-  @Column
-  gold_default_point : number;
-
-  @Column
-  bronze_max_point : number;
-
-  @Column
-  silver_max_point : number;
-
-  @Column
-  gold_max_point : number;
 
   @Column({field : 'refresh_token'})
   refreshToken : string
